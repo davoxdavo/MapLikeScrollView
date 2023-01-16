@@ -17,7 +17,6 @@ struct Coordinate: Codable, Hashable {
         self.point = point
     }
     
-    
     func hash(into hasher: inout Hasher) {
         hasher.combine(point.x)
         hasher.combine(point.y)

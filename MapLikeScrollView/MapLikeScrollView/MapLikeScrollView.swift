@@ -15,13 +15,13 @@ protocol MapLikeScrollViewDataSource: AnyObject {
 
 class MapLikeScrollView: UIView {
     
-    private let initialTileSideSize: CGFloat = 110
+    private let initialTileSideSize: CGFloat = 200
     
     private(set) var currentCenter: Coordinate = .zero
-    private var maxX: CGFloat = 0
-    private var maxY: CGFloat = 0
-    private var minX: CGFloat = 0
-    private var minY: CGFloat = 0
+    private var maxX: Int = 0
+    private var maxY: Int = 0
+    private var minX: Int = 0
+    private var minY: Int = 0
     
     private var isInsertingUp = false
     private var isInsertingDown = false
@@ -52,25 +52,23 @@ class MapLikeScrollView: UIView {
     
     @objc private func panDidMove(_ recognizer: UIPanGestureRecognizer) {
         
-        switch recognizer.state {
-        case .began, .changed: break
-        
-        case .ended, .cancelled, .failed, .possible: break
-            
-        @unknown default:
-            break
-        }
         let translation = recognizer.translation(in: self)
         let direction = ScrollDirection(point: translation)
         newRegion(for: direction)
-        print(direction)
+        let newX = CGFloat(Int(translation.x))
+        let newY = CGFloat(Int(translation.y))
         
-        currentCenter.point.x += translation.x
-        currentCenter.point.y += translation.y
+        minX += Int(newX)
+        maxX += Int(newY)
+        minY += Int(newY)
+        maxY += Int(newY)
+        currentCenter.point.x += newX
+        currentCenter.point.y += newY
+        
         for view in subviews {
-            view.center = CGPoint(x: view.center.x + translation.x, y: view.center.y + translation.y)
+            view.center = CGPoint(x: view.center.x + newX, y: view.center.y + newY)
         }
-                recognizer.setTranslation(CGPoint.zero, in: self)
+        recognizer.setTranslation(CGPoint.zero, in: self)
     }
  
     func reload() {
@@ -88,9 +86,9 @@ class MapLikeScrollView: UIView {
         
         for col in 0..<numberOfCols {
             for row in 0..<numberOfRows {
-                let x = CGFloat(col)*(initialTileSideSize) - 1.5 * initialTileSideSize
-                let y = CGFloat(row)*(initialTileSideSize) - 1.5 * initialTileSideSize
-               changeMaxMinPointsIfNeeded(x: x, y: y)
+                let x = CGFloat(col)*(initialTileSideSize) - 2 * initialTileSideSize
+                let y = CGFloat(row)*(initialTileSideSize) - 2 * initialTileSideSize
+                changeMaxMinPointsIfNeeded(x: x, y: y)
                 
                 let frame = CGRect(x: x, y: y, width: initialTileSideSize, height: initialTileSideSize)
                 let thisItemCoordinates = Coordinate(point: frame.origin)
@@ -101,17 +99,11 @@ class MapLikeScrollView: UIView {
     }
 
     private func getView(frame: CGRect) -> UIView {
-        var view: UIView
-        
-        if let fromMemory = coordinateManager.view(for: .init(point: frame.origin)) {
-            view = fromMemory
-        } else {
-            view = UIView()
-        }
+        let view = coordinateManager.view(for: .init(point: frame.origin))
         view.backgroundColor = UIColor.random()
         view.frame = frame
             let label = UILabel()
-        label.numberOfLines = 2
+        label.numberOfLines = 0
         label.text = "x: \(frame.origin.x)\ny: \(frame.origin.y)"
         view.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -123,7 +115,14 @@ class MapLikeScrollView: UIView {
         return view
     }
     
+    private func isCenterCloseToBorder() -> Bool {
+     return true
+    }
+    
+    
+    
     private func newRegion(for direction: ScrollDirection) {
+        
         switch direction {
         case .up:
             insertRegionUp()
@@ -160,11 +159,13 @@ class MapLikeScrollView: UIView {
         }
     }
     
+    // MARK: - Inserters
+    
     private func insertRegionUp() {
         guard !isInsertingUp else { return }
         isInsertingUp = true
-        var startPoint = CGPoint(x: minX, y: minY - initialTileSideSize)
-        let count = abs(Int((minX - maxX) / initialTileSideSize))
+        var startPoint = CGPoint(x: CGFloat(minX), y: CGFloat(minY) - initialTileSideSize)
+        let count = abs(Int(CGFloat(minX - maxX) / initialTileSideSize))
         for _ in 0..<count {
             let frame = CGRect(origin: startPoint, size: .init(width: initialTileSideSize, height: initialTileSideSize))
             startPoint.x += initialTileSideSize
@@ -180,8 +181,8 @@ class MapLikeScrollView: UIView {
     private func insertRegionDown() {
         guard !isInsertingDown else { return }
         isInsertingDown = true
-        var startPoint = CGPoint(x: minX, y: maxY + initialTileSideSize)
-        let count = abs(Int((minX - maxX) / initialTileSideSize))
+        var startPoint = CGPoint(x: CGFloat(minX), y: CGFloat(maxY) + initialTileSideSize)
+        let count = abs(Int(CGFloat(minX - maxX) / initialTileSideSize))
         for _ in 0..<count {
             let frame = CGRect(origin: startPoint, size: .init(width: initialTileSideSize, height: initialTileSideSize))
             startPoint.x += initialTileSideSize
@@ -197,8 +198,8 @@ class MapLikeScrollView: UIView {
     private func insertRegionLeft() {
         guard !isInsertingLeft else { return }
         isInsertingLeft = true
-        var startPoint = CGPoint(x: minX - initialTileSideSize, y: minY)
-        let count = abs(Int((minY - maxY) / initialTileSideSize))
+        var startPoint = CGPoint(x: CGFloat(minX) - initialTileSideSize, y: CGFloat(minY))
+        let count = abs(Int(CGFloat(minY - maxY) / initialTileSideSize))
         for _ in 0..<count {
             let frame = CGRect(origin: startPoint, size: .init(width: initialTileSideSize, height: initialTileSideSize))
             startPoint.y += initialTileSideSize
@@ -214,8 +215,8 @@ class MapLikeScrollView: UIView {
     private func insertRegionRight() {
         guard !isInsertingRight else { return }
         isInsertingRight = true
-        var startPoint = CGPoint(x: maxX + initialTileSideSize, y: minY)
-        let count = abs(Int((minY - maxY) / initialTileSideSize))
+        var startPoint = CGPoint(x: CGFloat(maxX) + initialTileSideSize, y: CGFloat(minY))
+        let count = abs(Int(CGFloat(minY - maxY) / initialTileSideSize))
         for _ in 0..<count {
             let frame = CGRect(origin: startPoint, size: .init(width: initialTileSideSize, height: initialTileSideSize))
             startPoint.y += initialTileSideSize
@@ -228,27 +229,37 @@ class MapLikeScrollView: UIView {
         isInsertingRight = false
     }
     
+    // MARK: - Removers
+    
     private func removeUp() {
-        let coordinate = getTopestCoordinate()
-        let views = coordinateManager.viewsUpperThan(coordinate: coordinate)
-        views.forEach { $0.removeFromSuperview() }
-        minY = coordinate.point.y
+//        let coordinate = getTopestCoordinate()
+//        let views = coordinateManager.viewsUpperThan(coordinate: coordinate)
+//        views.forEach { $0.removeFromSuperview() }
+//        minY = Int(coordinate.point.y)
     }
     
     private func removeDown() {
-        let views = coordinateManager.viewsDownThan(coordinate: getLowestCoordinate())
-        views.forEach { $0.removeFromSuperview() }
+//        let coordinate = getLowestCoordinate()
+//        let views = coordinateManager.viewsDownThan(coordinate: coordinate)
+//        views.forEach { $0.removeFromSuperview() }
+//        maxY = Int(coordinate.point.y)
     }
     
     private func removeLeft() {
-        let views = coordinateManager.viewsLefterThan(coordinate: getLeftestCoordinate())
-        views.forEach { $0.removeFromSuperview() }
+//        let coordinate = getLeftestCoordinate()
+//        let views = coordinateManager.viewsLefterThan(coordinate: coordinate)
+//        views.forEach { $0.removeFromSuperview() }
+//        minX = Int(coordinate.point.x)
     }
     
     private func removeRight() {
-        let views = coordinateManager.viewsRighterThan(coordinate: getRightestCoordiante())
-        views.forEach { $0.removeFromSuperview() }
+//        let coordinate = getRightestCoordiante()
+//        let views = coordinateManager.viewsRighterThan(coordinate: coordinate)
+//        views.forEach { $0.removeFromSuperview() }
+//        maxX = Int(coordinate.point.x)
     }
+    
+    // MARK: - EdgeCoordinateGetter
     
     private func getLowestCoordinate() -> Coordinate {
         var currentCenter = currentCenter.point
@@ -279,6 +290,8 @@ class MapLikeScrollView: UIView {
     }
     
     private func changeMaxMinPointsIfNeeded(x: CGFloat, y: CGFloat) {
+        let x = Int(x)
+        let y = Int(y)
         if x > maxX {
             maxX = x
         }
@@ -295,7 +308,6 @@ class MapLikeScrollView: UIView {
             minY = y
         }
     }
-    
 }
 
 
@@ -318,6 +330,7 @@ struct CoordinateManager {
     private var currentItems: [Coordinate: UIView] = [:]
     private var rowCoordinates: [CGFloat: [Coordinate]] = [:]
     private var colCoordinates: [CGFloat: [Coordinate]] = [:]
+    private var viewPool = [UIView]()
     
     mutating
     func insert(view: UIView, for coordinate: Coordinate) {
@@ -339,17 +352,35 @@ struct CoordinateManager {
     }
     
     mutating
-    func view(for coordinate: Coordinate) -> UIView? {
-        currentItems[coordinate]
+    func view(for coordinate: Coordinate) -> UIView {
+        if let view = currentItems[coordinate] {
+            return view
+        }
+        let view = createNewView()
+        currentItems[coordinate] = view
+        return view
+    }
+    
+    mutating
+    private func createNewView() -> UIView {
+        if let view = viewPool.last {
+            viewPool.removeLast()
+            return view
+        }
+        return UIView()
     }
     
     mutating
     func remove(for coordinate: Coordinate) {
+        guard let view = currentItems[coordinate] else { return }
+        view.removeFromSuperview()
+        viewPool.append(view)
         currentItems[coordinate] = nil
     }
     
     func viewsUpperThan(coordinate: Coordinate) -> [UIView] {
         var coordinates = [Coordinate]()
+        return []
         
         let rows = rowCoordinates.keys.filter { $0 < coordinate.point.y }
         
