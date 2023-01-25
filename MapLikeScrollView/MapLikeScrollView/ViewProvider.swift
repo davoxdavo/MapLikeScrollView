@@ -10,6 +10,7 @@ import UIKit
 struct ViewProvider {
     private var visibleViews: Set<ReusableView> = []
     private var viewPool = [ReusableView]()
+    var poolCapacity = 100
     
     mutating
     func dequeueView() -> ReusableView {
@@ -31,6 +32,9 @@ struct ViewProvider {
             view.prepareForReuse()
             return view
         }
+#if DEBUG
+        return DebugReusableView()
+#endif
         return ReusableView()
     }
     
@@ -38,7 +42,9 @@ struct ViewProvider {
     
     mutating
     func remove(view: ReusableView) {
-        viewPool.append(view)
+        if viewPool.count < poolCapacity {
+            viewPool.append(view)
+        }
         visibleViews.remove(view)
     }
     

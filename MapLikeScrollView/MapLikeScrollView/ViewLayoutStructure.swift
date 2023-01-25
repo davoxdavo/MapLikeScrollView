@@ -40,8 +40,8 @@ class ViewLayoutStructure {
     // MARK: - Gesture handlers
     
     func onScroll(translation: CGPoint) {
-        let newX = CGFloat(Int(translation.x * 100)/100)
-        let newY = CGFloat(Int(translation.y * 100)/100)
+        let newX = CGFloat(Int(translation.x * 10000)/10000)
+        let newY = CGFloat(Int(translation.y * 10000)/10000)
         
         for row in views {
             for item in row {
