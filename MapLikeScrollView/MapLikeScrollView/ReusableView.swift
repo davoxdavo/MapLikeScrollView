@@ -27,6 +27,7 @@ class DebugReusableView: ReusableView {
         label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         label.heightAnchor.constraint(equalToConstant: 80).isActive = true
         label.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        backgroundColor = UIColor.random()
     }
     
     required init?(coder: NSCoder) {

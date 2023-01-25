@@ -10,12 +10,13 @@
 		866B092B2975E9960002BEB1 /* ViewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866B092A2975E9960002BEB1 /* ViewProvider.swift */; };
 		866B093129788BF80002BEB1 /* ViewLayoutStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866B093029788BF80002BEB1 /* ViewLayoutStructure.swift */; };
 		869ECDF82981979300B4E06B /* ReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869ECDF72981979300B4E06B /* ReusableView.swift */; };
+		869ECDFA29819FB200B4E06B /* ImageCollectionScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869ECDF929819FB200B4E06B /* ImageCollectionScrollView.swift */; };
 		86C15EBB297379040055BC1F /* MapLikeScrollViewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C15EBA297379040055BC1F /* MapLikeScrollViewApp.swift */; };
 		86C15EBD297379040055BC1F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C15EBC297379040055BC1F /* ContentView.swift */; };
 		86C15EBF297379080055BC1F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86C15EBE297379080055BC1F /* Assets.xcassets */; };
 		86C15EC3297379080055BC1F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86C15EC2297379080055BC1F /* Preview Assets.xcassets */; };
 		86C15ECB297379430055BC1F /* MapLikeScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C15ECA297379430055BC1F /* MapLikeScrollView.swift */; };
-		86C15ECD297392B60055BC1F /* Coordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C15ECC297392B60055BC1F /* Coordinate.swift */; };
+		86C15ECD297392B60055BC1F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C15ECC297392B60055BC1F /* Extensions.swift */; };
 		86C15ECF297392C20055BC1F /* ScrollDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C15ECE297392C20055BC1F /* ScrollDirection.swift */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +24,7 @@
 		866B092A2975E9960002BEB1 /* ViewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewProvider.swift; sourceTree = "<group>"; };
 		866B093029788BF80002BEB1 /* ViewLayoutStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewLayoutStructure.swift; sourceTree = "<group>"; };
 		869ECDF72981979300B4E06B /* ReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableView.swift; sourceTree = "<group>"; };
+		869ECDF929819FB200B4E06B /* ImageCollectionScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionScrollView.swift; sourceTree = "<group>"; };
 		86C15EB7297379040055BC1F /* MapLikeScrollView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapLikeScrollView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		86C15EBA297379040055BC1F /* MapLikeScrollViewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLikeScrollViewApp.swift; sourceTree = "<group>"; };
 		86C15EBC297379040055BC1F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -30,7 +32,7 @@
 		86C15EC0297379080055BC1F /* MapLikeScrollView.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MapLikeScrollView.entitlements; sourceTree = "<group>"; };
 		86C15EC2297379080055BC1F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		86C15ECA297379430055BC1F /* MapLikeScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLikeScrollView.swift; sourceTree = "<group>"; };
-		86C15ECC297392B60055BC1F /* Coordinate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinate.swift; sourceTree = "<group>"; };
+		86C15ECC297392B60055BC1F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		86C15ECE297392C20055BC1F /* ScrollDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollDirection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +68,7 @@
 			children = (
 				86C15EBA297379040055BC1F /* MapLikeScrollViewApp.swift */,
 				86C15EBC297379040055BC1F /* ContentView.swift */,
+				869ECDF929819FB200B4E06B /* ImageCollectionScrollView.swift */,
 				86C15EC92973792D0055BC1F /* MapLikeScrollView */,
 				86C15EBE297379080055BC1F /* Assets.xcassets */,
 				86C15EC0297379080055BC1F /* MapLikeScrollView.entitlements */,
@@ -89,7 +92,7 @@
 				866B092A2975E9960002BEB1 /* ViewProvider.swift */,
 				869ECDF72981979300B4E06B /* ReusableView.swift */,
 				866B093029788BF80002BEB1 /* ViewLayoutStructure.swift */,
-				86C15ECC297392B60055BC1F /* Coordinate.swift */,
+				86C15ECC297392B60055BC1F /* Extensions.swift */,
 				86C15ECE297392C20055BC1F /* ScrollDirection.swift */,
 			);
 			path = MapLikeScrollView;
@@ -172,7 +175,8 @@
 				86C15ECF297392C20055BC1F /* ScrollDirection.swift in Sources */,
 				86C15ECB297379430055BC1F /* MapLikeScrollView.swift in Sources */,
 				86C15EBB297379040055BC1F /* MapLikeScrollViewApp.swift in Sources */,
-				86C15ECD297392B60055BC1F /* Coordinate.swift in Sources */,
+				86C15ECD297392B60055BC1F /* Extensions.swift in Sources */,
+				869ECDFA29819FB200B4E06B /* ImageCollectionScrollView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

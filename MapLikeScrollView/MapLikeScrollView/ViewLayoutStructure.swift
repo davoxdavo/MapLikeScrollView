@@ -12,6 +12,11 @@ class ViewLayoutStructure {
     private var maxY: CGFloat = 0
     private var minX: CGFloat = 0
     private var minY: CGFloat = 0
+    private var offset = CGPoint.zero
+
+    private var scaleFactor: CGFloat = 1
+    private let minimumScale: CGFloat = 0.7
+    private let maximumScale: CGFloat = 2
     
     private var isInsertingUp = false
     private var isInsertingDown = false
@@ -19,10 +24,11 @@ class ViewLayoutStructure {
     private var isInsertingRight = false
     
     // indicates amount of rows and cols rendered out of frame
-    private var numberOfExtraItems = 2
+    private var numberOfExtraItems = 4
+    
     private var itemSize: CGFloat
     private var containerSize: CGSize = .zero
-    
+   
     private var views = [[ReusableView]]()
     
     init(itemSize: CGFloat) {
@@ -43,6 +49,8 @@ class ViewLayoutStructure {
         let newX = CGFloat(Int(translation.x * 10000)/10000)
         let newY = CGFloat(Int(translation.y * 10000)/10000)
         
+        offset.x += newX
+        offset.y += newY
         for row in views {
             for item in row {
                 let newCenter = CGPoint(x: item.center.x + newX, y: item.center.y + newY)
@@ -50,12 +58,50 @@ class ViewLayoutStructure {
             }
         }
         updateMinMaxPoints()
-        
+       
+#if DEBUG
         for row in views {
             for item in row {
                 item.prepareForReuse()
             }
         }
+#endif
+    }
+    
+    func onPinch(scale: CGFloat) {
+        
+        print("curent scale is \(scale) and scaleFactor \(scaleFactor)")
+        scaleFactor *= scale
+        var effectiveScale: CGFloat = 1
+        if scaleFactor > maximumScale {
+            effectiveScale = maximumScale/scaleFactor
+            scaleFactor = maximumScale
+        }
+        if scaleFactor < minimumScale {
+            effectiveScale = minimumScale/scaleFactor
+            scaleFactor = minimumScale
+        }
+        itemSize *= (effectiveScale * scale)
+        for row in views {
+            for item in row {
+                var frame = item.frame
+                frame.origin.x *= (effectiveScale * scale)
+                frame.origin.y *= (effectiveScale * scale)
+                frame.size.height *= (effectiveScale * scale)
+                frame.size.width *= (effectiveScale * scale)
+                item.frame = frame
+            }
+        }
+        updateMinMaxPoints()
+    }
+    
+    func frameToIndexPath(_ frame: CGRect) -> IndexPath {
+        let realX = frame.origin.x - offset.x
+        let realY = frame.origin.y - offset.y
+
+        let row = Int(realY/itemSize)
+        let col = Int(realX/itemSize)
+        return IndexPath(row: row, section: col)
     }
     
     func initialLoad(height: CGFloat, width: CGFloat, itemFor: (CGRect) -> ReusableView?) {
@@ -77,8 +123,9 @@ class ViewLayoutStructure {
         }
     }
     
+    @discardableResult
     /// returns removed Views for reuse them
-    func insertRowUp(itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
+    func insertRowUp(removeOpposite: Bool = true, itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
         guard let firstItemInView = views[numberOfExtraItems-1].first,
               firstItemInView.frame.origin.y > 0
         else {
@@ -97,11 +144,15 @@ class ViewLayoutStructure {
             x += itemSize
         }
         views.insert(rowViews, at: 0)
-        return removeDown()
+        if removeOpposite {
+            return removeDown()
+        }
+        return []
     }
     
+    @discardableResult
     /// returns removed Views for reuse them
-    func insertRowDown(itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
+    func insertRowDown(removeOpposite: Bool = true, itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
         guard let lastItemInView = views[views.count-numberOfExtraItems-1].first,
               lastItemInView.frame.origin.y < containerSize.height - itemSize
         else {
@@ -120,11 +171,15 @@ class ViewLayoutStructure {
             x += itemSize
         }
         views.append(rowViews)
-        return removeUp()
+        if removeOpposite {
+            return removeUp()
+        }
+        return []
     }
     
+    @discardableResult
     /// returns removed Views for reuse them
-    func insertRowLeft(itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
+    func insertRowLeft(removeOpposite: Bool = true, itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
         let firstItemInView = views[numberOfExtraItems-1][numberOfExtraItems-1]
         guard firstItemInView.frame.origin.x > 0  else { return [] }
         
@@ -142,11 +197,15 @@ class ViewLayoutStructure {
         for i in 0..<views.count {
             views[i].insert(colViews[i], at: 0)
         }
-        return removeRight()
+        if removeOpposite {
+            return removeRight()
+        }
+        return []
     }
     
+    @discardableResult
     /// returns removed Views for reuse them
-    func insertRowRight(itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
+    func insertRowRight(removeOpposite: Bool = true, itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
         let lastItemInView = views[views.count-numberOfExtraItems-1][views.count-numberOfExtraItems-1]
         guard lastItemInView.frame.origin.x + itemSize < containerSize.width else { return [] }
         
@@ -165,7 +224,10 @@ class ViewLayoutStructure {
         for i in 0..<views.count {
             views[i].append(colViews[i])
         }
-        return removeLeft()
+        if removeOpposite {
+            return removeLeft()
+        }
+        return []
     }
     
     // MARK: - Removers

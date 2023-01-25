@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 
 protocol MapLikeScrollViewDataSource: AnyObject {
-    func view(for point: Coordinate, view: UIView?) -> UIView
+    func content(for indexPath: IndexPath) -> UIView
 }
 
 class MapLikeScrollView: UIView {
@@ -17,6 +17,7 @@ class MapLikeScrollView: UIView {
     private var layoutStructure = ViewLayoutStructure(itemSize: 200)
     
     weak var dataSource: MapLikeScrollViewDataSource?
+    private var itemInsetClosure: ((CGRect) -> ReusableView?)?
     
     convenience init() {
         self.init(frame: .zero)
@@ -36,6 +37,8 @@ class MapLikeScrollView: UIView {
     private func addGestures() {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panDidMove(_ :)))
         addGestureRecognizer(panGesture)
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(startZooming(_ :)))
+        addGestureRecognizer(pinchGesture)
     }
     
     @objc private func panDidMove(_ recognizer: UIPanGestureRecognizer) {
@@ -45,8 +48,19 @@ class MapLikeScrollView: UIView {
         newRegion(for: direction)
         recognizer.setTranslation(CGPoint.zero, in: self)
     }
+    
+    @objc private func startZooming(_ sender: UIPinchGestureRecognizer) {
+        guard sender.scale != 0 else { return }
+        layoutStructure.onPinch(scale: sender.scale)
+        sender.scale = 1
+    }
  
     func reload() {
+        itemInsetClosure = { [weak self] frame in
+            guard let self = self else { return nil }
+            let view = self.getView(frame: frame)
+            return view
+        }
         layoutStructure.reload()
         viewProvider.removeAll()
         subviews.forEach { $0.removeFromSuperview() }
@@ -64,9 +78,16 @@ class MapLikeScrollView: UIView {
     @discardableResult
     private func getView(frame: CGRect) -> ReusableView {
         let view = viewProvider.dequeueView()
-        view.backgroundColor = UIColor.random()
-        view.frame = frame
         view.prepareForReuse()
+        view.frame = frame
+        let indexPath = layoutStructure.frameToIndexPath(frame)
+        if let content = dataSource?.content(for: indexPath) {
+            view.addSubview(content)
+            content.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            content.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            content.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+            content.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        }
         addSubview(view)
         return view
     }
@@ -105,14 +126,12 @@ class MapLikeScrollView: UIView {
             newRegion(for: .up)
             newRegion(for: .left)
         case .upRight:
-            break
             newRegion(for: .up)
             newRegion(for: .right)
         case .downLeft:
             newRegion(for: .down)
             newRegion(for: .left)
         case .downRight:
-            break
             newRegion(for: .down)
             newRegion(for: .right)
         }
@@ -125,8 +144,6 @@ class MapLikeScrollView: UIView {
         }
     }
 }
-
-
 
 struct MapLikeScrollSwiftUIView: UIViewRepresentable {
     func makeUIView(context: Context) -> MapLikeScrollView {
