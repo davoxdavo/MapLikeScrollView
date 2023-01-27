@@ -9,15 +9,15 @@ import UIKit
 import SwiftUI
 
 protocol MapLikeScrollViewDataSource: AnyObject {
-    func content(for indexPath: IndexPath) -> UIView
+    func reuseView(for indexPath: IndexPath, view: IReusableView)
 }
 
-class MapLikeScrollView: UIView {
-    private var viewProvider = ViewProvider()
-    private var layoutStructure = ViewLayoutStructure(itemSize: 200)
+class MapLikeScrollView<T: IReusableView>: UIView {
+    private var viewProvider = ViewProvider<T>()
+    private var layoutStructure = ViewLayoutStructure<T>(itemSize: 200)
     
-    weak var dataSource: MapLikeScrollViewDataSource?
-    private var itemInsetClosure: ((CGRect) -> ReusableView?)?
+    weak var dataSource: (any MapLikeScrollViewDataSource)?
+    private var itemInsetClosure: ((CGRect) -> T?)?
     
     convenience init() {
         self.init(frame: .zero)
@@ -76,18 +76,13 @@ class MapLikeScrollView: UIView {
     }
 
     @discardableResult
-    private func getView(frame: CGRect) -> ReusableView {
-        let view = viewProvider.dequeueView()
+    private func getView(frame: CGRect) -> T {
+        var  view = viewProvider.dequeueView()
         view.prepareForReuse()
         view.frame = frame
         let indexPath = layoutStructure.frameToIndexPath(frame)
-        if let content = dataSource?.content(for: indexPath) {
-            view.addSubview(content)
-            content.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-            content.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-            content.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-            content.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        }
+        dataSource?.reuseView(for: indexPath, view: view)
+    
         addSubview(view)
         return view
     }
@@ -137,7 +132,7 @@ class MapLikeScrollView: UIView {
         }
     }
     
-    private func remove(views: [ReusableView]) {
+    private func remove(views: [T]) {
         views.forEach {
             viewProvider.remove(view: $0)
             $0.removeFromSuperview()
@@ -145,12 +140,13 @@ class MapLikeScrollView: UIView {
     }
 }
 
-struct MapLikeScrollSwiftUIView: UIViewRepresentable {
-    func makeUIView(context: Context) -> MapLikeScrollView {
-        MapLikeScrollView()
+struct MapLikeScrollSwiftUIView<T: ReusableView>: UIViewRepresentable {
+    typealias T = ReusableView
+    func makeUIView(context: Context) -> MapLikeScrollView<T> {
+        MapLikeScrollView<T>()
     }
     
-    func updateUIView(_ uiView: MapLikeScrollView, context: Context) {
+    func updateUIView(_ uiView: MapLikeScrollView<T>, context: Context) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             uiView.reload()
         }

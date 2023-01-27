@@ -7,41 +7,37 @@
 
 import UIKit
 
-struct ViewProvider {
-    private var visibleViews: Set<ReusableView> = []
-    private var viewPool = [ReusableView]()
+struct ViewProvider<T: IReusableView> {
+    private var visibleViews: Set<T> = []
+    private var viewPool = [T]()
     var poolCapacity = 100
     
     mutating
-    func dequeueView() -> ReusableView {
+    func dequeueView() -> T {
         let view = getView()
-        view.alpha = 1
         insert(view: view)
         return view
     }
     
     mutating
-    private func insert(view: ReusableView) {
+    private func insert(view: T) {
         visibleViews.insert(view)
     }
     
     mutating
-    private func getView() -> ReusableView {
+    private func getView() -> T {
         if let view = viewPool.last {
             viewPool.removeLast()
             view.prepareForReuse()
             return view
         }
-#if DEBUG
-        return DebugReusableView()
-#endif
-        return ReusableView()
+        return T()
     }
     
     // MARK: - REMOVERS
     
     mutating
-    func remove(view: ReusableView) {
+    func remove(view: T) {
         if viewPool.count < poolCapacity {
             viewPool.append(view)
         }

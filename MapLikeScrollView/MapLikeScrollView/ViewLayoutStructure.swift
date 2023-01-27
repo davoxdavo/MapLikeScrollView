@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewLayoutStructure {
+class ViewLayoutStructure<T: IReusableView> {
     private var maxX: CGFloat = 0
     private var maxY: CGFloat = 0
     private var minX: CGFloat = 0
@@ -29,7 +29,7 @@ class ViewLayoutStructure {
     private var itemSize: CGFloat
     private var containerSize: CGSize = .zero
    
-    private var views = [[ReusableView]]()
+    private var views = [[T]]()
     
     init(itemSize: CGFloat) {
         self.itemSize = itemSize
@@ -67,7 +67,7 @@ class ViewLayoutStructure {
         }
 #endif
     }
-    
+     
     func onPinch(scale: CGFloat) {
         
         print("curent scale is \(scale) and scaleFactor \(scaleFactor)")
@@ -104,7 +104,7 @@ class ViewLayoutStructure {
         return IndexPath(row: row, section: col)
     }
     
-    func initialLoad(height: CGFloat, width: CGFloat, itemFor: (CGRect) -> ReusableView?) {
+    func initialLoad(height: CGFloat, width: CGFloat, itemFor: (CGRect) -> T?) {
         let numberOfRows = Int(height / itemSize) + 2 * numberOfExtraItems
         let numberOfCols = Int(width / itemSize) + 2 * numberOfExtraItems
         containerSize = CGSize(width: width, height: height)
@@ -125,7 +125,7 @@ class ViewLayoutStructure {
     
     @discardableResult
     /// returns removed Views for reuse them
-    func insertRowUp(removeOpposite: Bool = true, itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
+    func insertRowUp(removeOpposite: Bool = true, itemFor: (CGRect) -> T?) -> [T] {
         guard let firstItemInView = views[numberOfExtraItems-1].first,
               firstItemInView.frame.origin.y > 0
         else {
@@ -133,7 +133,7 @@ class ViewLayoutStructure {
         }
         
         let numberOfItems = views.first?.count ?? 0
-        var rowViews = [ReusableView]()
+        var rowViews = [T]()
         var x = minX
         let y = minY - itemSize
         
@@ -152,7 +152,7 @@ class ViewLayoutStructure {
     
     @discardableResult
     /// returns removed Views for reuse them
-    func insertRowDown(removeOpposite: Bool = true, itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
+    func insertRowDown(removeOpposite: Bool = true, itemFor: (CGRect) -> T?) -> [T] {
         guard let lastItemInView = views[views.count-numberOfExtraItems-1].first,
               lastItemInView.frame.origin.y < containerSize.height - itemSize
         else {
@@ -160,7 +160,7 @@ class ViewLayoutStructure {
         }
         
         let numberOfItems = views.first?.count ?? 0
-        var rowViews = [ReusableView]()
+        var rowViews = [T]()
         var x = minX
         let y = maxY + itemSize
         
@@ -179,12 +179,12 @@ class ViewLayoutStructure {
     
     @discardableResult
     /// returns removed Views for reuse them
-    func insertRowLeft(removeOpposite: Bool = true, itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
+    func insertRowLeft(removeOpposite: Bool = true, itemFor: (CGRect) -> T?) -> [T] {
         let firstItemInView = views[numberOfExtraItems-1][numberOfExtraItems-1]
         guard firstItemInView.frame.origin.x > 0  else { return [] }
         
         let numberOfItems = views.count
-        var colViews = [ReusableView]()
+        var colViews = [T]()
         let x = minX - itemSize
         var y = minY
         
@@ -205,12 +205,12 @@ class ViewLayoutStructure {
     
     @discardableResult
     /// returns removed Views for reuse them
-    func insertRowRight(removeOpposite: Bool = true, itemFor: (CGRect) -> ReusableView?) -> [ReusableView] {
+    func insertRowRight(removeOpposite: Bool = true, itemFor: (CGRect) -> T?) -> [T] {
         let lastItemInView = views[views.count-numberOfExtraItems-1][views.count-numberOfExtraItems-1]
         guard lastItemInView.frame.origin.x + itemSize < containerSize.width else { return [] }
         
         let numberOfItems = views.count
-        var colViews = [ReusableView]()
+        var colViews = [T]()
         let x = maxX + itemSize
         var y = minY
         
@@ -232,20 +232,20 @@ class ViewLayoutStructure {
     
     // MARK: - Removers
     
-    func removeUp() -> [ReusableView] {
+    func removeUp() -> [T] {
         let views = views.removeFirst()
         updateMinMaxPoints()
         return views
     }
     
-    func removeDown() -> [ReusableView] {
+    func removeDown() -> [T] {
         let views = views.removeLast()
         updateMinMaxPoints()
         return views
     }
     
-    func removeLeft() -> [ReusableView] {
-        var views = [ReusableView]()
+    func removeLeft() -> [T] {
+        var views = [T]()
         for index in 0..<self.views.count {
             let firstItem = self.views[index].removeFirst()
             views.append(firstItem)
@@ -254,8 +254,8 @@ class ViewLayoutStructure {
         return views
     }
     
-    func removeRight() -> [ReusableView] {
-        var views = [ReusableView]()
+    func removeRight() -> [T] {
+        var views = [T]()
         for index in 0..<self.views.count {
             let firstItem = self.views[index].removeLast()
             views.append(firstItem)

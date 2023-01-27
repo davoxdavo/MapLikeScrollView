@@ -7,7 +7,11 @@
 
 import UIKit
 
-class ReusableView: UIView {
+protocol IReusableView: UIView {
+    func prepareForReuse()
+}
+
+class ReusableView: UIView, IReusableView {
     func prepareForReuse() {
         
     }
