@@ -11,6 +11,12 @@
 		866B093129788BF80002BEB1 /* ViewLayoutStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866B093029788BF80002BEB1 /* ViewLayoutStructure.swift */; };
 		869ECDF82981979300B4E06B /* ReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869ECDF72981979300B4E06B /* ReusableView.swift */; };
 		869ECDFA29819FB200B4E06B /* ImageCollectionScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 869ECDF929819FB200B4E06B /* ImageCollectionScrollView.swift */; };
+		86A5025829840BAB0081F345 /* ImageCacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A5025729840BAB0081F345 /* ImageCacheService.swift */; };
+		86A5025B29840F190081F345 /* ImageCacheStorage.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 86A5025929840F190081F345 /* ImageCacheStorage.xcdatamodeld */; };
+		86A5025D29840F870081F345 /* PersistentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A5025C29840F870081F345 /* PersistentController.swift */; };
+		86A5025F29840FC20081F345 /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A5025E29840FC20081F345 /* StorageService.swift */; };
+		86A50268298430DB0081F345 /* ImageCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A50267298430DB0081F345 /* ImageCollectionReusableView.swift */; };
+		86A5026B298432010081F345 /* ImageCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A5026A298432010081F345 /* ImageCollectionViewModel.swift */; };
 		86C15EBB297379040055BC1F /* MapLikeScrollViewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C15EBA297379040055BC1F /* MapLikeScrollViewApp.swift */; };
 		86C15EBD297379040055BC1F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C15EBC297379040055BC1F /* ContentView.swift */; };
 		86C15EBF297379080055BC1F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86C15EBE297379080055BC1F /* Assets.xcassets */; };
@@ -25,6 +31,12 @@
 		866B093029788BF80002BEB1 /* ViewLayoutStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewLayoutStructure.swift; sourceTree = "<group>"; };
 		869ECDF72981979300B4E06B /* ReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableView.swift; sourceTree = "<group>"; };
 		869ECDF929819FB200B4E06B /* ImageCollectionScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionScrollView.swift; sourceTree = "<group>"; };
+		86A5025729840BAB0081F345 /* ImageCacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheService.swift; sourceTree = "<group>"; };
+		86A5025A29840F190081F345 /* ImageCacheStorage.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ImageCacheStorage.xcdatamodel; sourceTree = "<group>"; };
+		86A5025C29840F870081F345 /* PersistentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersistentController.swift; sourceTree = "<group>"; };
+		86A5025E29840FC20081F345 /* StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		86A50267298430DB0081F345 /* ImageCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionReusableView.swift; sourceTree = "<group>"; };
+		86A5026A298432010081F345 /* ImageCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewModel.swift; sourceTree = "<group>"; };
 		86C15EB7297379040055BC1F /* MapLikeScrollView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapLikeScrollView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		86C15EBA297379040055BC1F /* MapLikeScrollViewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLikeScrollViewApp.swift; sourceTree = "<group>"; };
 		86C15EBC297379040055BC1F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -47,6 +59,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		86A5025629840B6D0081F345 /* ImageCacheService */ = {
+			isa = PBXGroup;
+			children = (
+				86A5025729840BAB0081F345 /* ImageCacheService.swift */,
+				86A5025929840F190081F345 /* ImageCacheStorage.xcdatamodeld */,
+				86A5025C29840F870081F345 /* PersistentController.swift */,
+				86A5025E29840FC20081F345 /* StorageService.swift */,
+			);
+			path = ImageCacheService;
+			sourceTree = "<group>";
+		};
+		86A50269298430DF0081F345 /* ImageCollection */ = {
+			isa = PBXGroup;
+			children = (
+				869ECDF929819FB200B4E06B /* ImageCollectionScrollView.swift */,
+				86A5026A298432010081F345 /* ImageCollectionViewModel.swift */,
+				86A50267298430DB0081F345 /* ImageCollectionReusableView.swift */,
+			);
+			path = ImageCollection;
+			sourceTree = "<group>";
+		};
 		86C15EAE297379040055BC1F = {
 			isa = PBXGroup;
 			children = (
@@ -68,8 +101,10 @@
 			children = (
 				86C15EBA297379040055BC1F /* MapLikeScrollViewApp.swift */,
 				86C15EBC297379040055BC1F /* ContentView.swift */,
-				869ECDF929819FB200B4E06B /* ImageCollectionScrollView.swift */,
+				86A50269298430DF0081F345 /* ImageCollection */,
 				86C15EC92973792D0055BC1F /* MapLikeScrollView */,
+				86C15ECC297392B60055BC1F /* Extensions.swift */,
+				86A5025629840B6D0081F345 /* ImageCacheService */,
 				86C15EBE297379080055BC1F /* Assets.xcassets */,
 				86C15EC0297379080055BC1F /* MapLikeScrollView.entitlements */,
 				86C15EC1297379080055BC1F /* Preview Content */,
@@ -92,7 +127,6 @@
 				866B092A2975E9960002BEB1 /* ViewProvider.swift */,
 				869ECDF72981979300B4E06B /* ReusableView.swift */,
 				866B093029788BF80002BEB1 /* ViewLayoutStructure.swift */,
-				86C15ECC297392B60055BC1F /* Extensions.swift */,
 				86C15ECE297392C20055BC1F /* ScrollDirection.swift */,
 			);
 			path = MapLikeScrollView;
@@ -168,14 +202,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86A5025B29840F190081F345 /* ImageCacheStorage.xcdatamodeld in Sources */,
 				866B093129788BF80002BEB1 /* ViewLayoutStructure.swift in Sources */,
 				86C15EBD297379040055BC1F /* ContentView.swift in Sources */,
 				866B092B2975E9960002BEB1 /* ViewProvider.swift in Sources */,
 				869ECDF82981979300B4E06B /* ReusableView.swift in Sources */,
+				86A50268298430DB0081F345 /* ImageCollectionReusableView.swift in Sources */,
+				86A5025829840BAB0081F345 /* ImageCacheService.swift in Sources */,
 				86C15ECF297392C20055BC1F /* ScrollDirection.swift in Sources */,
+				86A5025F29840FC20081F345 /* StorageService.swift in Sources */,
 				86C15ECB297379430055BC1F /* MapLikeScrollView.swift in Sources */,
 				86C15EBB297379040055BC1F /* MapLikeScrollViewApp.swift in Sources */,
 				86C15ECD297392B60055BC1F /* Extensions.swift in Sources */,
+				86A5026B298432010081F345 /* ImageCollectionViewModel.swift in Sources */,
+				86A5025D29840F870081F345 /* PersistentController.swift in Sources */,
 				869ECDFA29819FB200B4E06B /* ImageCollectionScrollView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -394,6 +434,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		86A5025929840F190081F345 /* ImageCacheStorage.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				86A5025A29840F190081F345 /* ImageCacheStorage.xcdatamodel */,
+			);
+			currentVersion = 86A5025A29840F190081F345 /* ImageCacheStorage.xcdatamodel */;
+			path = ImageCacheStorage.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 86C15EAF297379040055BC1F /* Project object */;
 }

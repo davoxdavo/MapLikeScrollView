@@ -9,9 +9,11 @@ import UIKit
 
 protocol IReusableView: UIView {
     func prepareForReuse()
+    var indexPath: IndexPath? { get set }
 }
 
 class ReusableView: UIView, IReusableView {
+    var indexPath: IndexPath?
     func prepareForReuse() {
         
     }

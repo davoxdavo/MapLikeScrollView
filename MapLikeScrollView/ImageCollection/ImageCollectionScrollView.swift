@@ -8,13 +8,8 @@
 import UIKit
 import SwiftUI
 
-
-class ImageCollectionViewModel {
-    
-}
-
 class ImageCollectionScrollView: UIView {
-    typealias T = DebugReusableView
+    typealias T = ImageCollectionReusableView
     
     private lazy var collection = MapLikeScrollView<T>()
     private var viewModel = ImageCollectionViewModel()
@@ -40,15 +35,14 @@ class ImageCollectionScrollView: UIView {
     
 }
 
-
 extension ImageCollectionScrollView: MapLikeScrollViewDataSource {
-    
     func reuseView(for indexPath: IndexPath, view: IReusableView) {
         if let view = view as? T {
-            // Here is the place to modify your Reusable Cell
+            viewModel.getImage(for: indexPath) { image in
+                view.image = image
+            }
         }
     }
-    
 }
 
 

@@ -77,10 +77,11 @@ class MapLikeScrollView<T: IReusableView>: UIView {
 
     @discardableResult
     private func getView(frame: CGRect) -> T {
-        var  view = viewProvider.dequeueView()
+        let view = viewProvider.dequeueView()
         view.prepareForReuse()
         view.frame = frame
         let indexPath = layoutStructure.frameToIndexPath(frame)
+        view.indexPath = indexPath
         dataSource?.reuseView(for: indexPath, view: view)
     
         addSubview(view)

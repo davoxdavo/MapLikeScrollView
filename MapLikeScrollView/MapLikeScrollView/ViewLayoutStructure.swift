@@ -58,14 +58,6 @@ class ViewLayoutStructure<T: IReusableView> {
             }
         }
         updateMinMaxPoints()
-       
-#if DEBUG
-        for row in views {
-            for item in row {
-                item.prepareForReuse()
-            }
-        }
-#endif
     }
      
     func onPinch(scale: CGFloat) {
