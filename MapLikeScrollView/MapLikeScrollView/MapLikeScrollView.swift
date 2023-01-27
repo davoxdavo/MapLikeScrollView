@@ -17,7 +17,6 @@ class MapLikeScrollView<T: IReusableView>: UIView {
     private var layoutStructure = ViewLayoutStructure<T>(itemSize: 200)
     
     weak var dataSource: (any MapLikeScrollViewDataSource)?
-    private var itemInsetClosure: ((CGRect) -> T?)?
     
     convenience init() {
         self.init(frame: .zero)
@@ -56,11 +55,6 @@ class MapLikeScrollView<T: IReusableView>: UIView {
     }
  
     func reload() {
-        itemInsetClosure = { [weak self] frame in
-            guard let self = self else { return nil }
-            let view = self.getView(frame: frame)
-            return view
-        }
         layoutStructure.reload()
         viewProvider.removeAll()
         subviews.forEach { $0.removeFromSuperview() }
@@ -140,6 +134,8 @@ class MapLikeScrollView<T: IReusableView>: UIView {
         }
     }
 }
+
+// MARK: - SwiftUI Wrapper
 
 struct MapLikeScrollSwiftUIView<T: ReusableView>: UIViewRepresentable {
     typealias T = ReusableView

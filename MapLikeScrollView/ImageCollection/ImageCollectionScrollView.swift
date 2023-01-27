@@ -45,6 +45,7 @@ extension ImageCollectionScrollView: MapLikeScrollViewDataSource {
     }
 }
 
+// MARK: - SwiftUI Wrapper
 
 struct ImageCollectionScrollViewSwiftUIWrapper: UIViewRepresentable {
     func makeUIView(context: Context) -> ImageCollectionScrollView {

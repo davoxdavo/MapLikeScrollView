@@ -30,8 +30,13 @@ class ImageCacheService {
         cache.countLimit = 100
         cache.totalCostLimit = 150 * 1024 * 1024
     }
+    
     // MARK: - Public
     
+    ///Size of memory cache is 100 items or 150MB but you have also limitless storage and also all cacheing system will work automatically you don't have to worry about inMemory or permanent storing of image that came from Remote server
+    /// - DataSource - Showing location where you file was located when delivered via closure
+    /// - Data - Binary data of image file
+    /// - ImageCacheError - Error value if there is any
     func getImage(for url: URL, completion: @escaping (Data?, DataSource, ImageCacheError?) -> ()) {
         guard let nsURL = NSURL(string: url.absoluteString) else {
             completion(nil, .all, .wrongURL)

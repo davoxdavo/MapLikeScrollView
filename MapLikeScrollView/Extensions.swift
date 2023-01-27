@@ -23,3 +23,16 @@ extension UIColor {
         )
     }
 }
+
+extension Double {
+    func dropDecimalsAfter(amountOfDecimals: Int) -> Double {
+        let stringValue = String(format: "%.\(amountOfDecimals)f", self)
+        return Double(stringValue) ?? self
+    }
+}
+
+extension CGFloat {
+    func dropDecimalsAfter(amountOfDecimals: Int) -> CGFloat {
+        CGFloat(Double(self).dropDecimalsAfter(amountOfDecimals: amountOfDecimals))
+    }
+}

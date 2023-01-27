@@ -18,13 +18,8 @@ class ViewLayoutStructure<T: IReusableView> {
     private let minimumScale: CGFloat = 0.7
     private let maximumScale: CGFloat = 2
     
-    private var isInsertingUp = false
-    private var isInsertingDown = false
-    private var isInsertingLeft = false
-    private var isInsertingRight = false
-    
     // indicates amount of rows and cols rendered out of frame
-    private var numberOfExtraItems = 4
+    private let numberOfExtraItems = 3
     
     private var itemSize: CGFloat
     private var containerSize: CGSize = .zero
@@ -46,23 +41,22 @@ class ViewLayoutStructure<T: IReusableView> {
     // MARK: - Gesture handlers
     
     func onScroll(translation: CGPoint) {
-        let newX = CGFloat(Int(translation.x * 10000)/10000)
-        let newY = CGFloat(Int(translation.y * 10000)/10000)
-        
+        let newX = translation.x.dropDecimalsAfter(amountOfDecimals: 5)
+        let newY = translation.y.dropDecimalsAfter(amountOfDecimals: 5)
         offset.x += newX
         offset.y += newY
+        
         for row in views {
             for item in row {
                 let newCenter = CGPoint(x: item.center.x + newX, y: item.center.y + newY)
                 item.center = newCenter
             }
         }
+        
         updateMinMaxPoints()
     }
      
     func onPinch(scale: CGFloat) {
-        
-        print("curent scale is \(scale) and scaleFactor \(scaleFactor)")
         scaleFactor *= scale
         var effectiveScale: CGFloat = 1
         if scaleFactor > maximumScale {
@@ -74,6 +68,7 @@ class ViewLayoutStructure<T: IReusableView> {
             scaleFactor = minimumScale
         }
         itemSize *= (effectiveScale * scale)
+        
         for row in views {
             for item in row {
                 var frame = item.frame
@@ -84,6 +79,10 @@ class ViewLayoutStructure<T: IReusableView> {
                 item.frame = frame
             }
         }
+        
+        offset.x *= (effectiveScale * scale)
+        offset.y *= (effectiveScale * scale)
+        
         updateMinMaxPoints()
     }
     
@@ -104,9 +103,9 @@ class ViewLayoutStructure<T: IReusableView> {
         for row in 0..<numberOfRows {
             views.append([])
             for col in 0..<numberOfCols {
-                
                 let x = CGFloat(col)*(itemSize) - CGFloat(numberOfExtraItems) * itemSize
                 let y = CGFloat(row)*(itemSize) - CGFloat(numberOfExtraItems) * itemSize
+                
                 let frame = CGRect(x: x, y: y, width: itemSize, height: itemSize)
                 guard let view = itemFor(frame) else { return }
                 views[row].append(view)
@@ -222,21 +221,22 @@ class ViewLayoutStructure<T: IReusableView> {
         return []
     }
     
+    // MARK: - Private
     // MARK: - Removers
     
-    func removeUp() -> [T] {
+    private func removeUp() -> [T] {
         let views = views.removeFirst()
         updateMinMaxPoints()
         return views
     }
     
-    func removeDown() -> [T] {
+    private func removeDown() -> [T] {
         let views = views.removeLast()
         updateMinMaxPoints()
         return views
     }
     
-    func removeLeft() -> [T] {
+    private func removeLeft() -> [T] {
         var views = [T]()
         for index in 0..<self.views.count {
             let firstItem = self.views[index].removeFirst()
@@ -246,7 +246,7 @@ class ViewLayoutStructure<T: IReusableView> {
         return views
     }
     
-    func removeRight() -> [T] {
+    private func removeRight() -> [T] {
         var views = [T]()
         for index in 0..<self.views.count {
             let firstItem = self.views[index].removeLast()

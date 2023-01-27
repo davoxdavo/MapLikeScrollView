@@ -12,11 +12,12 @@ protocol IReusableView: UIView {
     var indexPath: IndexPath? { get set }
 }
 
+extension IReusableView {
+    func prepareForReuse() {}
+}
+
 class ReusableView: UIView, IReusableView {
     var indexPath: IndexPath?
-    func prepareForReuse() {
-        
-    }
 }
 
 class DebugReusableView: ReusableView {
@@ -40,8 +41,8 @@ class DebugReusableView: ReusableView {
         super.init(coder: coder)
     }
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
+    func prepareForReuse() {
+        prepareForReuse()
         label?.text = "x: \(frame.origin.x)\ny: \(frame.origin.y)"
     }
 }

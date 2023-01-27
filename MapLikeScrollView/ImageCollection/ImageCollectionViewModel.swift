@@ -13,7 +13,8 @@ class ImageCollectionViewModel {
     private var completions = [IndexPath: ImageCompletion]()
     
     func getImage(for indexPath: IndexPath, completion: ImageCompletion?)  {
-        guard let url = URL(string: "https://source.unsplash.com/random/150x150?sig=\(abs(indexPath.hashValue))") else {
+        let number = dummyNumberFrom(indexPath: indexPath)
+        guard let url = URL(string: "https://picsum.photos/200/300?random=2\(number)") else {
             completion?(nil)
             return
         }
@@ -29,5 +30,17 @@ class ImageCollectionViewModel {
             completion(image)
             self?.completions[indexPath] = nil
         }
+    }
+    
+        // This function is just trying to create as unique number as it possible from indexPath :) to help me unify the URL 
+    private func dummyNumberFrom(indexPath: IndexPath) -> Int {
+        let row = indexPath.row
+        let section = indexPath.section
+        let arg1 = row * row * row + 2
+        let arg2 = section * (row.isMultiple(of: 2) ? 7 : 12) + 3
+        let arg3 = (section > 0 ? 51 : -6) * (row > 1 ? 14 : 41 )
+        let number = arg1 * arg2 + arg3
+        
+        return number
     }
 }
